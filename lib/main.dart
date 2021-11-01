@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import './settings.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(SmartRepoApp());
 
-
-
-class MyApp extends StatelessWidget {
+class SmartRepoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Welcome to Smart Repository',
-      home: Scaffold(
+	  home: Home(),
+    );
+  } // widget 
+}
+
+class Home extends StatelessWidget{
+	@override
+	Widget build(BuildContext context){
+		return Scaffold(
         appBar: AppBar(
           title: Text('Welcome to Smart Repository'),
 		  centerTitle:true,
@@ -30,16 +37,17 @@ class MyApp extends StatelessWidget {
 		  ],
         ),
         body: const Center(
-          child: Text('Hello World'),
+          child: Text('Home screen'),
         ),
-      ), // Scaffold
-    );
-  } // widget 
+      ); // Scaffold
+	}
 
 	  void onSelected(BuildContext context, int item){
 			switch (item) {
 				case 0: 
-				print('Clicked setting');
+				Navigator.of(context).push(
+					MaterialPageRoute(builder: (context) => new SmartRepoSettings() ),
+				);
 				break;
 				case 1: 
 				print('Clicked about');
