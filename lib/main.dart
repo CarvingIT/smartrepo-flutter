@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import './settings.dart';
+import './new_site.dart';
+import './app_storage.dart';
 
 void main() => runApp(SmartRepoApp());
 
@@ -32,6 +34,10 @@ class Home extends StatelessWidget{
 						value:1,
 						child: Text('About'),
 					),
+					PopupMenuItem<int>(
+						value:2,
+						child: Text('New Site'),
+					),
 				],
 			),
 		  ],
@@ -51,6 +57,11 @@ class Home extends StatelessWidget{
 				break;
 				case 1: 
 				print('Clicked about');
+				break;
+				case 2: 
+				Navigator.of(context).push(
+					MaterialPageRoute(builder: (context) => new NewSite() ),
+				);
 				break;
 			}
 	  }
