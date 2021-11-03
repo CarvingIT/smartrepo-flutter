@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import './app_storage.dart';
+import 'dart:convert';
+import 'package:validators/validators.dart';
 
 // settings screen
 class NewSite extends StatelessWidget{
@@ -58,8 +60,9 @@ class NewSiteFormState extends State<NewSiteForm> {
 				hintText: 'Base URL of your new Smart Repository site',
 			),
   		  	validator: (value) {
-    		if (value == null || value.isEmpty) {
-      		return 'Please enter some text';
+    			//if (value == null || value.isEmpty) {
+    			if (!isURL(value)) {
+      			return 'Please enter a valid URL';
     		}
     		return null;
    		},
@@ -68,19 +71,37 @@ class NewSiteFormState extends State<NewSiteForm> {
   		onPressed: () {
     		// Validate returns true if the form is valid, or false otherwise.
     		if (_formKey.currentState!.validate()) {
-      		// If the form is valid, display a snackbar. In the real world,
-      		// you'd often call a server or save the information in a database.
-			var site_store = new AppStorage();
-			site_store.writeFile('sr_sites.txt', siteUrl.text);
 
 			// read file 
+			var site_store = new AppStorage();
 			var file_content = site_store.readFile('sr_sites.txt');
+			String sites = '';
+			List<String> sites_list = [];
+				file_content.then((value) {
+					sites = value;
+
+				// unserialize sites into a list, add the new siteUrl.text to it, serialize and then save
+				//var sites_json = jsonDecode(sites);
+				try{
+				var sites_json = json.decode(sites);
+				sites_list = List.from(sites_json);
+				}
+				catch(e, s){
+					//logException(exception: e, stackTrace: s);
+					print('Something went wrong somewhere');
+				}
+				sites_list.add(siteUrl.text);
+				print(sites_list);
+		 		// serialize and write to file	
+				var sites_updated = jsonEncode(sites_list);
+				site_store.writeFile('sr_sites.txt', sites_updated);
+
+				});
+	
+				// show status of operation
       		ScaffoldMessenger.of(context).showSnackBar(
         		const SnackBar(content: Text('Saved ..')),
       		);
-				file_content.then((value) => {
-					print(value)
-				});
     		}
   		},
   		child: const Text('Submit'),
