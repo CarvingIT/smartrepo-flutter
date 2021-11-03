@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import './app_storage.dart';
+
 // settings screen
 class NewSite extends StatelessWidget{
   @override
@@ -40,6 +42,7 @@ class NewSiteFormState extends State<NewSiteForm> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  TextEditingController siteUrl = TextEditingController();
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
     return Form(
@@ -49,6 +52,7 @@ class NewSiteFormState extends State<NewSiteForm> {
           // Add TextFormFields and ElevatedButton here.
 		  TextFormField(
  			// The validator receives the text that the user has entered.
+			controller: siteUrl,
 			decoration: const InputDecoration(
 				labelText: 'Smart Repository URL *',
 				hintText: 'Base URL of your new Smart Repository site',
@@ -66,9 +70,17 @@ class NewSiteFormState extends State<NewSiteForm> {
     		if (_formKey.currentState!.validate()) {
       		// If the form is valid, display a snackbar. In the real world,
       		// you'd often call a server or save the information in a database.
+			var site_store = new AppStorage();
+			site_store.writeFile('sr_sites.txt', siteUrl.text);
+
+			// read file 
+			var file_content = site_store.readFile('sr_sites.txt');
       		ScaffoldMessenger.of(context).showSnackBar(
-        		const SnackBar(content: Text('Adding your site...')),
+        		const SnackBar(content: Text('Saved ..')),
       		);
+				file_content.then((value) => {
+					print(value)
+				});
     		}
   		},
   		child: const Text('Submit'),
