@@ -17,6 +17,8 @@ class SmartRepoApp extends StatelessWidget {
 
 class Home extends StatelessWidget{
 	@override
+	final sr_sites = List<String>.generate(100, (i) => "Site $i");
+
 	Widget build(BuildContext context){
 		return Scaffold(
         appBar: AppBar(
@@ -42,9 +44,28 @@ class Home extends StatelessWidget{
 			),
 		  ],
         ),
-        body: const Center(
-          child: Text('Home screen'),
-        ),
+        body: Scrollbar(
+		  child: ListView.builder(
+		  itemCount: sr_sites.length,
+		  itemBuilder: (context, index) {
+					return Container(
+						margin:EdgeInsets.all(10),
+						width:50,
+						height:100,
+						child: Padding(
+							padding: EdgeInsets.all(16.0),
+							child:Card(
+								color:Colors.yellow,
+								child: Padding(
+									padding: EdgeInsets.all(16.0),
+									child:Text(sr_sites[index]),
+								),
+							),
+						),
+					);
+  			},
+		),
+		),
       ); // Scaffold
 	}
 
