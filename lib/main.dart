@@ -2,23 +2,25 @@ import 'package:flutter/material.dart';
 import './settings.dart';
 import './new_site.dart';
 import './app_storage.dart';
+import 'dart:convert';
 
 void main() => runApp(SmartRepoApp());
 
 class SmartRepoApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Welcome to Smart Repository',
-	  home: Home(),
-    );
-  } // widget 
+
+	Widget build(BuildContext context) {
+		return MaterialApp(
+      			title: 'Welcome to Smart Repository',
+	  			home: Home(),
+		);
+    } // widget 
+
 }
 
 class Home extends StatelessWidget{
 	@override
-	final sr_sites = List<String>.generate(100, (i) => "Site $i");
-
+	List<String> sr_sites = [];
 	Widget build(BuildContext context){
 		return Scaffold(
         appBar: AppBar(
@@ -44,28 +46,52 @@ class Home extends StatelessWidget{
 			),
 		  ],
         ),
-        body: Scrollbar(
+        body: SRSites(),
+			/*
+			Scrollbar(
 		  child: ListView.builder(
 		  itemCount: sr_sites.length,
 		  itemBuilder: (context, index) {
-					return Container(
-						margin:EdgeInsets.all(10),
-						width:50,
-						height:100,
+  			// read sites 
+			var site_store = new AppStorage();
+   			var file_content = site_store.readFile('sr_sites.txt');
+ 			String sites = '';
+ 			List<String> sites_list = [];
+			var sites_container = Container(
+				margin:EdgeInsets.all(10),
+				width:50,
+				height:100,
+				child: Padding(
+					padding: EdgeInsets.all(16.0),
+					child:Card(
+						color:Colors.yellow,
 						child: Padding(
 							padding: EdgeInsets.all(16.0),
-							child:Card(
-								color:Colors.yellow,
-								child: Padding(
-									padding: EdgeInsets.all(16.0),
-									child:Text(sr_sites[index]),
-								),
-							),
+							child:Text(sr_sites[index]),
 						),
-					);
+					),
+				),
+			);
+    		file_content.then((value){
+     			sites = value;
+     			var sites_json = json.decode(sites);
+     			sites_list = List.from(sites_json);
+				print(sites_list);
+        	})
+			.catchError((e) {
+				print("Some error");
+			})
+			.whenComplete(() { 
+				// rebuild here
+				sr_sites = sites_list;
+				print('Need to rebuild home');
+  			}); // widget 
+
+			return sites_container;
   			},
 		),
 		),
+		*/
       ); // Scaffold
 	}
 
@@ -87,3 +113,80 @@ class Home extends StatelessWidget{
 			}
 	  }
 }
+
+class SRSites extends StatefulWidget {
+	const SRSites({Key? key}) : super(key: key);
+	@override
+    State<SRSites> createState() => _SRSitesState();
+}
+
+class _SRSitesState extends State<SRSites> {
+
+  @override
+  Widget build(BuildContext context) {
+  final Future<String> _calculation = Future<String>.delayed(
+    const Duration(seconds: 2),
+    () => 'Data Loaded',
+  );
+	// read sites 
+	var site_store = new AppStorage();
+   	Future<String> file_content = site_store.readFile('sr_sites.txt');
+
+    return DefaultTextStyle(
+      style: Theme.of(context).textTheme.headline2!,
+      textAlign: TextAlign.center,
+      child: FutureBuilder<String>(
+        future: file_content, // a previously-obtained Future<String> or null
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          List<Widget> children;
+          if (snapshot.hasData) {
+			print("Got data!");
+            children = <Widget>[
+              const Icon(
+                Icons.check_circle_outline,
+                color: Colors.green,
+                size: 60,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text('Result: ${snapshot.data}'),
+              )
+            ];
+          } else if (snapshot.hasError) {
+            children = <Widget>[
+              const Icon(
+                Icons.error_outline,
+                color: Colors.red,
+                size: 60,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text('Error: ${snapshot.error}'),
+              )
+            ];
+          } else {
+            children = const <Widget>[
+              SizedBox(
+                child: CircularProgressIndicator(),
+                width: 60,
+                height: 60,
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Text('Awaiting result...'),
+              )
+            ];
+          }
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: children,
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
