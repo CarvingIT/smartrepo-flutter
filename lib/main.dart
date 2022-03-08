@@ -193,6 +193,7 @@
 import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 import 'package:smartrepoapp/screens/aboutscreen.dart';
+import 'package:smartrepoapp/screens/jsonscreen.dart';
 import 'package:smartrepoapp/screens/settingsscreen.dart';
 
 import 'screens/mainscreen.dart';
@@ -210,6 +211,7 @@ class MyApp extends StatelessWidget {
       routes: {
         AboutScreen.routeName: (ctx) => const AboutScreen(),
         SettingsScreen.routeName: (ctx) => const SettingsScreen(),
+        JsonScreen.routeName: (ctx) => JsonScreen(),
       },
     );
   }

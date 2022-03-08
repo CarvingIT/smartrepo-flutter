@@ -24,7 +24,7 @@ class AppStorage {
       // Read the file
       final contents = await file.readAsString();
 
-	  return contents;
+      return contents;
     } catch (e) {
       // If encountering an error, return an empty string
       return '';
