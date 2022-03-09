@@ -9,6 +9,8 @@ import '../providers/app_storage.dart';
 import 'package:smartrepoapp/screens/aboutscreen.dart';
 import 'package:smartrepoapp/widgets/newurl.dart';
 
+import 'jsonscreen.dart';
+
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 
@@ -29,14 +31,19 @@ class _MainScreenState extends State<MainScreen> {
   Future<List> repos() async {
     var siteStore = AppStorage();
     var fileContent = siteStore.readFile('sr_sites.txt');
+    var jsonfileContent = siteStore.readFile('myJsonFile.json');
     String sites = '';
+    String jsonSites = '';
 
-    await fileContent.then(
+    await jsonfileContent.then(
       (value) {
         sites = value;
+        // print('sites');
+        // print(sites);
         try {
           var siteJson = json.decode(sites);
-          // print(siteJson);
+          print('JSON');
+          print(siteJson);
           sitesList = List.from(siteJson);
         } catch (e) {
           print(e);
@@ -46,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
         // return sitesList;
       },
     );
-    print(sitesList);
+    // print(sitesList);
 
     return sitesList;
   }
@@ -61,9 +68,9 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       // sitesList.add(newUrl);
       repoList.add(newUrl.url);
-      repoList.add(newUrl.id);
+      // repoList.add(newUrl.id);
       print(newUrl.id);
-      // print(repoList);
+      print(repoList);
       // _repositories.add(newUrl);
     });
   }
@@ -176,7 +183,13 @@ class _MainScreenState extends State<MainScreen> {
             onTap: () {
               Navigator.of(context).pushNamed(AboutScreen.routeName);
             },
-          )
+          ),
+          ListTile(
+            title: Text('JSON'),
+            onTap: () {
+              Navigator.of(context).pushNamed(JsonScreen.routeName);
+            },
+          ),
         ],
       ),
     );
